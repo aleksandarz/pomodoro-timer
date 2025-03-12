@@ -1,0 +1,82 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body
+{
+    font-family: 'Nunito', sans-serif;
+}
+
+.animated-gradient 
+{
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(45deg, #ff69b4, #8e81e6, #ff0080, #78bbff);
+    background-size: 400% 400%;
+    animation: gradientAnimation 15s infinite alternate ease-in-out;
+}
+
+@keyframes gradientAnimation 
+{
+    0% 
+    {
+        background-position: 0% 50%;
+    }
+    50% 
+    {
+        background-position: 100% 50%;
+    }
+    100% 
+    {
+        background-position: 0% 50%;
+    }
+}
+
+.container
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.timer
+{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+#time
+{
+    font-size: 7.5rem;
+    color: white;
+}
+
+.buttons-div
+{
+    display: flex;
+    gap: 1rem;
+}
+
+.buttons
+{
+    background-color: #0800ff;
+    color: white;
+    width: 7.5rem;
+    height: 2.5rem;
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.5s ease;
+}
+
+.buttons:hover
+{
+    background-color: #ff0080;
+}
+
