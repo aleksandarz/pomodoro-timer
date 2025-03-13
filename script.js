@@ -1,7 +1,8 @@
 let countdownMinutes,
     countdownSeconds,
     countdownInterval,
-    isRunning = false;
+    isRunning = false,
+    onBreak = false;
 
 window.onload = function () {
     document.querySelector("#pomodoroTime").value =
@@ -28,6 +29,7 @@ btnSave.addEventListener("click", () => {
 
     countdownMinutes = values.pomodoro;
     countdownSeconds = 0;
+    onBreak = false;
 
     updateDisplay();
 });
@@ -55,6 +57,7 @@ resetBtn.addEventListener("click", () => {
     let values = SaveSettings();
     countdownMinutes = values.pomodoro;
     countdownSeconds = 0;
+    onBreak = false;
 
     updateDisplay();
 });
@@ -62,8 +65,25 @@ resetBtn.addEventListener("click", () => {
 function Countdown() {
     if (countdownMinutes === 0 && countdownSeconds === 0) {
         clearInterval(countdownInterval);
-        alert("Vreme isteklo!");
-        isRunning = false;
+
+        if (!onBreak) {
+            let breakTime = parseInt(localStorage.getItem("breakTime")) || 5;
+            countdownMinutes = breakTime;
+            countdownSeconds = 0;
+            onBreak = true;
+            alert("Time for a break!");
+            isRunning = true;
+            countdownInterval = setInterval(Countdown, 1000);
+        } else {
+            let pomodoroTime =
+                parseInt(localStorage.getItem("pomodoroTime")) || 25;
+            countdownMinutes = pomodoroTime;
+            countdownSeconds = 0;
+            onBreak = false;
+            alert("It's time for a new Pomodoro!");
+            isRunning = true;
+            countdownInterval = setInterval(Countdown, 1000);
+        }
         return;
     }
 
