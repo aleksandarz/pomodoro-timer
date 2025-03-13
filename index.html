@@ -7,19 +7,26 @@
     <title>Pomodoro timer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <main class="animated-gradient">
+    <main class="animatedGradient">
         <section class="container">
-            <div class="timer">
+            <form action="" id="settings">
+                <label>Pomodoro (min) </label>
+                <input type="input" id="pomodoroTime" class="inputField" value="25">
+                <label>Break (min) </label>
+                <input type="input" id="breakTime" class="inputField" value="5">
+                <button type="button" class="bigButton" id="btnSave">Save settings</button>
+            </form>
+            <div class="timer" id="hiddenDiv">
                 <div class="time">
-                    <h1 id="time">25:00</h1>
+                    <h1 id="time"></h1>
                 </div>
-                <div class="buttons-div">
+                <div class="buttonsDiv">
                     <button class="buttons" id="start">Start</button>
                     <button class="buttons" id="pause">Pause</button>
                     <button class="buttons" id="reset">Reset</button>
