@@ -1,3 +1,6 @@
+import { playSound } from "./sounds.js";
+import { saveSettings, loadSettings } from "./settings.js";
+
 let countdownMinutes,
     countdownSeconds,
     countdownInterval,
@@ -5,25 +8,23 @@ let countdownMinutes,
     onBreak = false;
 
 window.onload = function () {
-    document.querySelector("#pomodoroTime").value =
-        localStorage.getItem("pomodoroTime") || 25;
-    document.querySelector("#breakTime").value =
-        localStorage.getItem("breakTime") || 5;
+    let settings = loadSettings();
+    document.querySelector("#pomodoroTime").value = settings.pomodoro;
+    document.querySelector("#breakTime").value = settings.breakTime;
+
+    countdownMinutes = settings.pomodoro;
+    countdownSeconds = 0;
+    onBreak = false;
+
+    updateDisplay();
 };
 
-function SaveSettings() {
-    let pomodoro = document.querySelector("#pomodoroTime").value;
-    let breakTime = document.querySelector("#breakTime").value;
+document.querySelector("#btnSave").addEventListener("click", () => {
+    let values = saveSettings(
+        document.querySelector("#pomodoroTime").value,
+        document.querySelector("#breakTime").value
+    );
 
-    localStorage.setItem("pomodoroTime", pomodoro);
-    localStorage.setItem("breakTime", breakTime);
-
-    return { pomodoro: parseInt(pomodoro), breakTime: parseInt(breakTime) };
-}
-
-let btnSave = document.querySelector("#btnSave");
-btnSave.addEventListener("click", () => {
-    let values = SaveSettings();
     document.querySelector("#settings").style.display = "none";
     document.querySelector("#hiddenDiv").style.display = "flex";
 
@@ -34,35 +35,35 @@ btnSave.addEventListener("click", () => {
     updateDisplay();
 });
 
-let startBtn = document.querySelector("#start");
-let pauseBtn = document.querySelector("#pause");
-let resetBtn = document.querySelector("#reset");
+document.querySelector("#start").addEventListener("click", startTimer);
+document.querySelector("#pause").addEventListener("click", pauseTimer);
+document.querySelector("#reset").addEventListener("click", resetTimer);
 
-startBtn.addEventListener("click", () => {
+function startTimer() {
     if (!isRunning) {
         isRunning = true;
-        countdownInterval = setInterval(Countdown, 1000);
+        countdownInterval = setInterval(countdown, 1000);
     }
-});
+}
 
-pauseBtn.addEventListener("click", () => {
+function pauseTimer() {
     isRunning = false;
     clearInterval(countdownInterval);
-});
+}
 
-resetBtn.addEventListener("click", () => {
+function resetTimer() {
     isRunning = false;
     clearInterval(countdownInterval);
 
-    let values = SaveSettings();
-    countdownMinutes = values.pomodoro;
+    let settings = loadSettings();
+    countdownMinutes = settings.pomodoro;
     countdownSeconds = 0;
     onBreak = false;
 
     updateDisplay();
-});
+}
 
-function Countdown() {
+function countdown() {
     if (countdownMinutes === 0 && countdownSeconds === 0) {
         clearInterval(countdownInterval);
 
@@ -71,22 +72,22 @@ function Countdown() {
             countdownMinutes = breakTime;
             countdownSeconds = 0;
             onBreak = true;
+
             playSound("pomodoro_end");
             alert("Time for a break!");
 
-            isRunning = true;
-            countdownInterval = setInterval(Countdown, 1000);
+            startTimer();
         } else {
             let pomodoroTime =
                 parseInt(localStorage.getItem("pomodoroTime")) || 25;
             countdownMinutes = pomodoroTime;
             countdownSeconds = 0;
             onBreak = false;
+
             playSound("break_end");
             alert("It's time for a new Pomodoro!");
 
-            isRunning = true;
-            countdownInterval = setInterval(Countdown, 1000);
+            startTimer();
         }
         return;
     }
@@ -105,21 +106,4 @@ function updateDisplay() {
     document.querySelector("#time").innerHTML = `${countdownMinutes}:${
         countdownSeconds < 10 ? "0" : ""
     }${countdownSeconds}`;
-}
-
-const SOUNDS = {
-    pomodoro_end: "./sounds/alert_one.wav",
-    break_start: "./sounds/alert_one.wav",
-    break_end: "./sounds/alert_one.wav",
-};
-
-function playSound(event) {
-    let soundUrl = SOUNDS[event];
-    if (!soundUrl) {
-        console.error("Invalid event name");
-        return;
-    }
-
-    let audio = new Audio(soundUrl);
-    audio.play();
 }
